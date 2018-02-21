@@ -1,0 +1,6 @@
+# All
+*
+
+# But not
+!dist/**
+!package.json
