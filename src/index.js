@@ -28,10 +28,10 @@ export const middleware = (store) => (next) => (action) => {
 export function reduceUI(state, action) {
   switch (action.type) {
     case 'TOGGLE_PULL_ROCKET': {
-      if (state.pullRocket !== undefined && state.pullRocket >= 0) {
-        return state.set('pullRocket', state.pullRocket + 1)
+      if (state.pullRocket === undefined ) {
+        return state.set('pullRocket', 1)
       } else {
-        return state.set('pullRocket', 0)
+        return state.set('pullRocket', state.pullRocket + 1)
       }
     }
   }
@@ -70,7 +70,9 @@ export function decorateTerm(Term) {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (nextProps.pullRocket === 0 || nextProps.pullRocket > this.props.pullRocket) {
+      if (nextProps.pullRocket === undefined) {
+        this.setState({displayPullRocket: false})
+      } else if(nextProps.pullRocket > this.props.pullRocket || nextProps.pullRocket === 1) {
         this.setState({displayPullRocket: true})
       } else {
         this.setState({displayPullRocket: false})
