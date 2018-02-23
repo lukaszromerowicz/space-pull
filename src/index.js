@@ -3,10 +3,11 @@ import Spaceship from './Spaceship'
 
 
 const detectGitPull = (data) => {
-  const pattern = /^Updating [ ]{0,}([a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+)|(\[[a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+\])$/
-  const antiPattern = /error/
+  const patterns = 
+  ['^Updating {0,}([a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+)|(\[[a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+\])$', '^Unpacking objects']
+  const antiPattern = /CONFLICT/
   
-  return pattern.test(data) && !antiPattern.test(data)
+  return new RegExp(`(${patterns.join(')|(')})`).test(data) && !antiPattern.test(data)
 }
 
 export const middleware = (store) => (next) => (action) => {
