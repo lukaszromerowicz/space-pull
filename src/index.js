@@ -91,10 +91,10 @@ export function decorateTerm(Term) {
     render () {
       return( 
         <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-          <Spaceship display={this.state.displayPullRocket} onAnimationEnd={this.onAnimationEnd.bind(this)}/>
           {React.createElement(Term, Object.assign({}, this.props, {
             onTerminal: this._onTerminal,
           }))}
+          <Spaceship display={this.state.displayPullRocket} onAnimationEnd={this.onAnimationEnd.bind(this)}/>
       </div>
       )
     }

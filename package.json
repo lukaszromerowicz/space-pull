@@ -1,6 +1,6 @@
 {
   "name": "space-pull",
-  "version": "1.0.6",
+  "version": "1.0.12",
   "description": "Spaceship that delivers your code to you on git pull.",
   "main": "dist/index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/lukaszromerowicz/space-pull#readme",
   "dependencies": {
-    "styled-components": "^3.1.6"
+    "styled-components": "^2.1.0"
   },
   "devDependencies": {
     "react": "^16.2.0",
