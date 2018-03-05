@@ -71,12 +71,8 @@ export function decorateTerm(Term) {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (nextProps.pullRocket === undefined) {
-        this.setState({displayPullRocket: false})
-      } else if(nextProps.pullRocket > this.props.pullRocket || nextProps.pullRocket === 1 && this.props.pullRocket === undefined) {
+      if((nextProps.pullRocket > this.props.pullRocket) || (nextProps.pullRocket === 1 && this.props.pullRocket === undefined)) {
         this.setState({displayPullRocket: true})
-      } else {
-        this.setState({displayPullRocket: false})
       }
     }
 
