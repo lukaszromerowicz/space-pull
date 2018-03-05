@@ -1,6 +1,6 @@
 {
   "name": "space-pull",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Spaceship that delivers your code to you on git pull.",
   "main": "dist/index.js",
   "scripts": {
