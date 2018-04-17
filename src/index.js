@@ -114,11 +114,6 @@ export function decorateTerm(Term) {
     onTakeoffAnimationEnd(event) {
       setTimeout(() => {
         this.setState({
-          displayPullRocket: false
-        })
-      }, 1500);
-      setTimeout(() => {
-        this.setState({
           displayPushRocket: false
         })
       }, 1500)
