@@ -8,11 +8,25 @@ const openLeftLeg = keyframes`
     transform: rotate(-35deg) skewX(-35deg); } 
 `
 
+const closeLeftLeg = keyframes`
+  from {
+    transform: rotate(-35deg) skewX(-35deg); } 
+    to {
+    transform: rotate(90deg) skewX(35deg); }
+`
+
 const openRightLeg = keyframes`
   from {
     transform: rotate(-90deg) skewX(-35deg); }
   to {
     transform: rotate(35deg) skewX(35deg); }
+`
+
+const closeRightLeg = keyframes`
+  from {
+    transform: rotate(35deg) skewX(-35deg); }
+  to {
+    transform: rotate(-90deg) skewX(35deg); }
 `
 
 const wiggle = keyframes`
@@ -33,6 +47,16 @@ const land = keyframes`
   }
   to {
     top: calc(100% - 180px);
+    display: none; 
+  }
+`
+
+const takeoff = keyframes`
+  from {
+    top: calc(100% - 180px);
+  }
+  to {
+    top: -400px; 
     display: none; 
   }
 `
@@ -72,6 +96,20 @@ const Rocket = styled.div`
   animation-fill-mode: none,none,forwards;
 `
 
+const RocketTakeoff = styled.div`
+  display: ${props => (props.display ? 'block' : 'none')};
+  position: absolute;
+  left: calc(90% - 50px);
+  top: calc(50% - 50px);
+  height: 220px;
+  animation-name: ${wiggle}, none, ${takeoff};
+  animation-duration: 320ms, 2000s, 2000ms;
+  animation-delay: 0ms, 3000ms;
+  animation-iteration-count: 8, 1,1;
+  animation-timing-function: ease-out;
+  animation-fill-mode: none,none,forwards;
+`
+
 const RocketSpan = styled.span`
   display: block;
   top: 30px;
@@ -97,6 +135,30 @@ const RocketSpan = styled.span`
 
 const RocketBow = styled.i`
   top: 0;
+  height: 60px;
+  width: 26px;
+  display: block;
+  border-top-left-radius: 100%;
+  border-top-right-radius: 100%;
+  background-color: #a7a9b1;
+  box-sizing: border-box;
+  border-left: 3px solid #797d88;
+
+  :after{
+    content: '';
+    position: absolute;
+    display: block;
+    left: 13px;
+    width: 10px;
+    top: 3px;
+    height: 27px;
+    border-top-right-radius: 100%;
+    background: linear-gradient(180deg, #a7a9b1 20%, #d6d8e1); 
+  }
+`
+
+const RocketBowTakeoff = styled.i`
+  top: 100%;
   height: 60px;
   width: 26px;
   display: block;
@@ -168,6 +230,16 @@ const LegLeft = Leg.extend`
   transform: rotate(90deg) skewX(35deg);
 `
 
+const LegLeftTakeoff = Leg.extend`
+  right: 23px;
+  transform-origin: right center;
+  animation-name: ${closeLeftLeg};
+  animation-duration: 500ms;
+  animation-delay: 500ms;
+  animation-fill-mode: forwards;
+  transform: rotate(-35deg) skewX(-35deg);
+`
+
 const LegRight = Leg.extend`
   left: 23px;
   transform-origin: left center;
@@ -176,6 +248,16 @@ const LegRight = Leg.extend`
   animation-delay: 500ms;
   animation-fill-mode: forwards;
   transform: rotate(-90deg) skewX(-35deg);
+`
+
+const LegRightTakeoff = Leg.extend`
+  left: 23px;
+  transform-origin: left center;
+  animation: ${closeRightLeg};
+  animation-duration: 500ms;
+  animation-delay: 500ms;
+  animation-fill-mode: forwards;
+  transform: rotate(35deg) skewX(-35deg);
 `
 
 const Blaze = styled.i`
@@ -192,6 +274,22 @@ const Blaze = styled.i`
   animation-delay: 0ms, 2000ms;
   animation-iteration-count: infinite, 1;
   animation-fill-mode: none, forwards; 
+`
+
+const BlazeTakeoff = styled.i`
+  position: absolute;
+  top: 160px;
+  left: -6px;
+  display: block;
+  background-color: #FF3D00;
+  border-radius: 50% 50% 70% 70%;
+  width: 40px;
+  height: 60px;
+  animation-name: ${engineTurnOff}, ${engineTurnedOn};
+  animation-duration: 200ms, 1000ms;
+  animation-delay: 0ms, 200ms;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: forwards, none; 
 `
 
 const BlazeInner = styled.i`
@@ -214,7 +312,7 @@ const BlazeInnerExtra = BlazeInner.extend`
   background-color: #FFFF00;
 `
 
-const Spaceship = ({display, onAnimationEnd}) => (
+const SpaceshipLand = ({display, onAnimationEnd}) => (
   <Rocket display={display} onAnimationEnd={onAnimationEnd.bind(this)}>
     <RocketSpan/>
     <RocketBow/>
@@ -230,6 +328,22 @@ const Spaceship = ({display, onAnimationEnd}) => (
   </Rocket> 
 )
 
-export default Spaceship
+const SpaceshipTakeoff = ({display, onAnimationEnd}) => (
+  <RocketTakeoff display={display} onAnimationEnd={onAnimationEnd.bind(this)}>
+    <LegLeftTakeoff/>
+    <LegRightTakeoff/>
+    <BlazeTakeoff>
+      <BlazeInnerMedium/>
+      <BlazeInnerExtra/>
+    </BlazeTakeoff>
+    <RocketSpan/>
+    <RocketBowTakeoff/>
+    <FinLeft/>
+    <FinRight/>
+    <RocketEngine/>
+  </RocketTakeoff> 
+)
+
+export { SpaceshipLand, SpaceshipTakeoff }
 
 

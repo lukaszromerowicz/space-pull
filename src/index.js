@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
-import Spaceship from './Spaceship'
-
+import { SpaceshipLand, SpaceshipTakeoff } from './Spaceship'
 
 const detectGitPull = (data) => {
   const patterns = 
-  ['^Updating {0,}([a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+)|(\[[a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+\])$', '^Unpacking objects']
+  ['^Updating {0,}([a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+)|(\[[a-z0-9A-Z]+\.{2,3}[a-z0-9A-Z]+\])$', '^Unpacking objects', 'Already up-to-date.']
+  const antiPattern = /CONFLICT/
+  
+  return new RegExp(`(${patterns.join(')|(')})`).test(data) && !antiPattern.test(data)
+}
+
+const detectGitPush = (data) => {
+  const patterns = 
+  ['To .+.git', 'Everything up-to-date.']
   const antiPattern = /CONFLICT/
   
   return new RegExp(`(${patterns.join(')|(')})`).test(data) && !antiPattern.test(data)
@@ -17,6 +24,12 @@ export const middleware = (store) => (next) => (action) => {
     if (detectGitPull(data)) {
       store.dispatch({
         type: 'TOGGLE_PULL_ROCKET'
+      })
+    }
+
+    if (detectGitPush(data)) {
+      store.dispatch({
+        type: 'TOGGLE_PUSH_ROCKET'
       })
     }
 
@@ -35,20 +48,30 @@ export function reduceUI(state, action) {
         return state.set('pullRocket', state.pullRocket + 1)
       }
     }
+    case 'TOGGLE_PUSH_ROCKET': {
+      if (state.pushRocket === undefined ) {
+        return state.set('pushRocket', 1)
+      } else {
+        return state.set('pushRocket', state.pushRocket + 1)
+      }
+    }
+      
   }
   return state
 }
 
 export function mapTermsState(state, map) {
   return Object.assign(map, {
-    pullRocket: state.ui.pullRocket
+    pullRocket: state.ui.pullRocket,
+    pushRocket: state.ui.pushRocket
   })
 }
 
 
 const passProps = (uid, parentProps, props) => {
   return Object.assign(props, {
-    pullRocket: parentProps.pullRocket
+    pullRocket: parentProps.pullRocket,
+    pushRocket: parentProps.pushRocket
   })
 }
 
@@ -60,7 +83,8 @@ export function decorateTerm(Term) {
     constructor (props, context) {
       super(props,context)
       this.state = {
-        displayPullRocket: false
+        displayPullRocket: false,
+        displayPushRocket: false
       }
     }
 
@@ -74,12 +98,28 @@ export function decorateTerm(Term) {
       if((nextProps.pullRocket > this.props.pullRocket) || (nextProps.pullRocket === 1 && this.props.pullRocket === undefined)) {
         this.setState({displayPullRocket: true})
       }
+      if((nextProps.pushRocket > this.props.pushRocket) || (nextProps.pushRocket === 1 && this.props.pushRocket === undefined)) {
+        this.setState({displayPushRocket: true})
+      }
     }
 
     onAnimationEnd(event) {
       setTimeout(() => {
-          this.setState({
+        this.setState({
           displayPullRocket: false
+        })
+      }, 1500);
+    }
+
+    onTakeoffAnimationEnd(event) {
+      setTimeout(() => {
+        this.setState({
+          displayPullRocket: false
+        })
+      }, 1500);
+      setTimeout(() => {
+        this.setState({
+          displayPushRocket: false
         })
       }, 1500)
     }
@@ -90,7 +130,8 @@ export function decorateTerm(Term) {
           {React.createElement(Term, Object.assign({}, this.props, {
             onTerminal: this._onTerminal,
           }))}
-          <Spaceship display={this.state.displayPullRocket} onAnimationEnd={this.onAnimationEnd.bind(this)}/>
+          <SpaceshipLand display={this.state.displayPullRocket} onAnimationEnd={this.onAnimationEnd.bind(this)}/>
+          <SpaceshipTakeoff display={this.state.displayPushRocket} onAnimationEnd={this.onTakeoffAnimationEnd.bind(this)}/>
       </div>
       )
     }
